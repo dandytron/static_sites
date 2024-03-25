@@ -49,14 +49,26 @@ class TestInlineMarkdown(unittest.TestCase):
 
     def test_invalid_delimiter(self):
         node = TextNode("This **test** text **has** bolded words.", text_type_text)
-        new_nodes = split_nodes_delimiter([node], "?", text_type_bold)
-        self.assertListEqual([
-            TextNode("This", text_type_text),
-            TextNode("test", text_type_bold),
-            TextNode("text", text_type_text),
-            TextNode("has", text_type_bold),
-            TextNode("bolded words.", text_type_text),
-        ],
-        new_nodes,
+        with self.assertRaises(ValueError):
+            split_nodes_delimiter([node], "?", text_type_bold)
+
+    def test_extract_markdown_images(self):
+        matches = extract_markdown_images(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)"
         )
-        with self.assertRaises(ValueError)
+        self.assertListEqual([("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
+
+    def test_extract_markdown_links(self):
+        matches = extract_markdown_links(
+            "[This](https://www.rockpapershotgun.com/) is text with a link and so is [this](https://www.rockpapershotgun.com/dragons-dogma-2-review)"
+        )
+        self.assertListEqual(
+            [
+                ("This", "https://www.rockpapershotgun.com/"),
+                ("this", "https://www.rockpapershotgun.com/dragons-dogma-2-review"),
+            ],
+            matches,
+        )
+
+if __name__ == "__main__":
+    unittest.main()
