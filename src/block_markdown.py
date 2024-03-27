@@ -12,6 +12,14 @@ block_type_ul = "unordered list"
 block_type_ol = "ordered list"
 
 
+def markdown_to_html_node(markdown):
+    blocks = markdown_to_blocks(markdown)
+    children = []
+    for block in blocks:
+        html_node = block_to_html_node(block)
+        children.append(html_node)
+    return ParentNode("div", children, None)
+
 def markdown_to_blocks(markdown):
     blocks = []
     # split the text into blocks by /n newline characters
@@ -61,14 +69,6 @@ def block_to_block_type(block):
         return block_type_ol
     # If none of the above conditions are met, the block is a normal paragraph.
     return block_type_paragraph
-    
-def markdown_to_html_node(markdown):
-    blocks = markdown_to_blocks(markdown)
-    children = []
-    for block in blocks:
-        html_node = block_to_html_node(block)
-        children.append(html_node)
-    return ParentNode("div", children, None)
 
 def block_to_html_node(block):
     block_type = block_to_block_type(block)
