@@ -15,15 +15,14 @@ block_type_ol = "ordered list"
 def markdown_to_blocks(markdown):
     blocks = []
     # split the text into blocks by /n newline characters
-    split_markdown = markdown.split("\n")
+    split_markdown = markdown.split("\n\n")
     # if any block is an empty character, do not include it
     for piece in split_markdown:
         if piece == "":
             continue
-        else:
             # strip leading and trailing whitespace from each split piece, add to blocks list
-            piece = piece.strip()
-            blocks.append(piece)
+        piece = piece.strip()
+        blocks.append(piece)
     return blocks
 
 def block_to_block_type(block):
@@ -126,9 +125,9 @@ def quote_to_html_node(block):
     lines = block.split('\n')
     new_lines = []
     for line in lines:
-        if not line.startswith(r'> .+'):
+        if not line.startswith('>'):
             raise ValueError("Invalid quote block")
-        new_lines.append(line.strip().lstrip('>'))
+        new_lines.append(line.strip().lstrip('> '))
     text = ' '.join(new_lines)
     children = text_to_children(text)
     return ParentNode("blockquote", children)
@@ -147,7 +146,7 @@ def ol_to_html_node(block):
     html_items = []
     # Only difference between this and above is that we need to slice off the first 3 chars: a number, a period and a whitespace.
     for item in items:
-        number_match = re.match(f'([0-9]+)\. ', item)
+        number_match = re.match(r'^([0-9]+)\. ', item)
         if not number_match == None:
             number = number_match.group(0)
             text = item[len(number):]

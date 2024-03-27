@@ -1,13 +1,13 @@
 import unittest
-from mblock_markdown import (
+from block_markdown import (
     markdown_to_html_node,
     markdown_to_blocks,
     block_to_block_type,
     block_type_paragraph,
     block_type_heading,
     block_type_code,
-    block_type_olist,
-    block_type_ulist,
+    block_type_ol,
+    block_type_ul,
     block_type_quote,
 )
 
@@ -64,9 +64,9 @@ This is the same paragraph on a new line
         block = "> quote\n> more quote"
         self.assertEqual(block_to_block_type(block), block_type_quote)
         block = "* list\n* items"
-        self.assertEqual(block_to_block_type(block), block_type_ulist)
+        self.assertEqual(block_to_block_type(block), block_type_ul)
         block = "1. list\n2. items"
-        self.assertEqual(block_to_block_type(block), block_type_olist)
+        self.assertEqual(block_to_block_type(block), block_type_ol)
         block = "paragraph"
         self.assertEqual(block_to_block_type(block), block_type_paragraph)
 

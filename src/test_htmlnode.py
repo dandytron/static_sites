@@ -1,6 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, ParentNode, LeafNode
 
 class TestHTMLNode(unittest.TestCase):
     def test_props_to_html(self):
@@ -27,8 +27,8 @@ class TestHTMLNode(unittest.TestCase):
         )
     
     def test_to_html_no_children(self):
-        node = LeafNode("p", "Hello, world!")
-        self.assertEqual(node.to_html(), "<p>Hello, world!</p>")
+        node = ParentNode("p")  # No children passed
+        self.assertEqual(node.to_html(), "<p></p>")  # Expecting an opening and closing tag with no content
 
     def test_leaf_to_html_no_tag(self):
         node = LeafNode(None, "Hello, world!")

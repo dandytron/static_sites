@@ -1,14 +1,21 @@
 import unittest
 from inline_markdown import(
-    split_nodes_delimiter
+    split_nodes_delimiter,
+    split_node_images,
+    split_node_links,
+    text_to_text_nodes,
+    extract_markdown_links,
+    extract_markdown_images,
 )
 
-from text_node import (
+from textnode import (
     TextNode,
     text_type_text,
     text_type_bold,
     text_type_italic,
     text_type_code,
+    text_type_image,
+    text_type_link,
 )
 
 class TestInlineMarkdown(unittest.TestCase):
@@ -16,7 +23,7 @@ class TestInlineMarkdown(unittest.TestCase):
         node = TextNode("This test text has a bolded **word**.", text_type_text)
         new_nodes = split_nodes_delimiter([node], "**", text_type_bold)
         self.assertListEqual([
-            TextNode("This test text has a bolded", text_type_text),
+            TextNode("This test text has a bolded ", text_type_text),
             TextNode("word", text_type_bold),
             TextNode(".", text_type_text),
         ],
@@ -27,9 +34,9 @@ class TestInlineMarkdown(unittest.TestCase):
         node = TextNode("This **test text** has bolded words.", text_type_text)
         new_nodes = split_nodes_delimiter([node], "**", text_type_bold)
         self.assertListEqual([
-            TextNode("This", text_type_text),
+            TextNode("This ", text_type_text),
             TextNode("test text", text_type_bold),
-            TextNode("has bolded words.", text_type_text),
+            TextNode(" has bolded words.", text_type_text),
         ],
         new_nodes,
         )
@@ -38,11 +45,11 @@ class TestInlineMarkdown(unittest.TestCase):
         node = TextNode("This **test** text **has** bolded words.", text_type_text)
         new_nodes = split_nodes_delimiter([node], "**", text_type_bold)
         self.assertListEqual([
-            TextNode("This", text_type_text),
+            TextNode("This ", text_type_text),
             TextNode("test", text_type_bold),
-            TextNode("text", text_type_text),
+            TextNode(" text ", text_type_text),
             TextNode("has", text_type_bold),
-            TextNode("bolded words.", text_type_text),
+            TextNode(" bolded words.", text_type_text),
         ],
         new_nodes,
         )
@@ -107,11 +114,11 @@ class TestInlineMarkdown(unittest.TestCase):
             [
                 TextNode("This text has this ", text_type_text),
                 TextNode("image", text_type_image, "https://imgur.com/gallery/vkuRns6"),
-                TextNode("and also this ", text_type_text),
+                TextNode(" and also this ", text_type_text),
                 TextNode("image", text_type_image, "https://imgur.com/t/aww/TVXCWAx"),
-                TextNode("and also this one ", text_type_text),
+                TextNode(" and also this one ", text_type_text),
                 TextNode("image", text_type_image, "https://imgur.com/t/aww/ALyEQ13"),
-                TextNode("too ", text_type_text),
+                TextNode(" too.", text_type_text),
             ],
             new_nodes,
         )
@@ -131,11 +138,7 @@ class TestInlineMarkdown(unittest.TestCase):
         )
 
     def test_text_to_textnodes(self):
-        node = TextNode(
-            "This is **text** with an *italic* word and a `code block` and an ![image](https://i.imgur.com/zjjcJKZ.png) and a [link](https://boot.dev)",
-            text_type_text,
-        )
-        new_nodes = text_to_textnodes([node])
+        nodes = text_to_text_nodes("This is **text** with an *italic* word and a `code block` and an ![image](https://i.imgur.com/zjjcJKZ.png) and a [link](https://boot.dev)")
         self.assertListEqual(
             [
                 TextNode("This is ", text_type_text),
@@ -149,7 +152,7 @@ class TestInlineMarkdown(unittest.TestCase):
                 TextNode(" and a ", text_type_text),
                 TextNode("link", text_type_link, "https://boot.dev"),
             ],
-            new_nodes,
+            nodes,
         )
 
 

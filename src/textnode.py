@@ -14,13 +14,16 @@ class TextNode:
         self.url = url
 
     def __eq__(self, other):
-        if not isinstance(other, TextNode):
-            raise TypeError("Second parameter is not of the TextNode type. Please provide another TextNode to compare.")
-        return self.text == other.text and self.text_type == other.text_type and self.url == other.url
+        return (
+            self.text_type == other.text_type
+            and self.text == other.text
+            and self.url == other.url
+        )
 
     def __repr__(self):
         return f"TextNode({self.text}, {self.text_type}, {self.url})"
 
+        
 def text_node_to_html_node(text_node):
     match text_node.text_type:
         case None: raise Exception(f"Invalid text type: {text_node.text_type}")
